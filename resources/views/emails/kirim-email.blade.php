@@ -11,7 +11,7 @@
         @endif
         <form action="{{ route('post-email') }}" method="post">
             @csrf
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="name">Nama</label>
                 <input type="text" class="form-control" name="name" id="name" placeholder="Nama">
             </div>
@@ -29,7 +29,28 @@
             </div>
             <div class="form-group">
                 <button class="btn btn-primary">Kirim Email</button>
+            </div> --}}
+
+            <div class="form group">
+                <label for="name">Nama</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nama">
             </div>
+            <div class="form-group my-3">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+            </div>
+            <div class="form-group my-3">
+                <label for="number">Nomor Telepon</label>
+                <input type="number" class="form-control" name="number" id="number" placeholder="Nomor Telepon">
+            </div>
+            <div class="form-group my-3">
+                <label for="address">Alamat</label>
+                <input type="address" class="form-control" name="address" id="address" placeholder="Alamat">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">Kirim Email</button>
+            </div>
+        </form>
     </div>
  </div>
  @endsection

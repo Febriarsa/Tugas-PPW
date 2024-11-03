@@ -28,6 +28,6 @@
     public function handle(): void
     {
         $email = new SendEmail($this->data);
-        Mail::to($this->data['email'])->send($email);
+        Mail::to($data['email'])->send(new \App\Mail\SendEmail($data));
     }
  }
