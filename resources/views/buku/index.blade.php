@@ -1,6 +1,5 @@
 @extends('auth.layouts')
 @section('content')
-    ;
     <div class="m-3">
         <h1 class="text-center m-3">Data Buku</h1>
         {{-- pesan sukses --}}
@@ -9,9 +8,11 @@
         @endif
 
         @auth
+            @if(auth()->check() && auth()->user()->level == 'admin')
             <a href="{{ route('buku.create') }}" class="btn btn-primary float-end">Tambah Buku</a>
+            @endif
         @endauth
-        <table class="table table-stripped" id="table-data">
+        <table class="table table-striped" id="table-data">
             <thead>
                 <tr>
                     <th>id</th>
@@ -20,7 +21,9 @@
                     <th>Harga</th>
                     <th>Tanggal Terbit</th>
                     @auth
+                        @if(auth()->check() && auth()->user()->level == 'admin')
                         <th>Aksi</th>
+                        @endif
                     @endauth
                 </tr>
             </thead>
@@ -30,12 +33,13 @@
                         $no++;
                     @endphp
                     <tr>
-                        <td>{{ $no }}</td>
+                        <td>{{ $no = 1 }}</td>
                         <td>{{ $buku->judul }}</td>
                         <td>{{ $buku->penulis }}</td>
                         <td>{{ 'Rp. ' . number_format($buku->harga, 0, ',', '.') }}</td>
                         <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d-m-Y') }}</td>
                         @auth
+                            @if(auth()->check() && auth()->user()->level == 'admin')
                             <td class="d-flex">
                                 <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
                                     @csrf
@@ -45,6 +49,7 @@
                                 </form>
                                 <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-secondary">Edit</a>
                             </td>
+                            @endif
                         @endauth
                     </tr>
                 @endforeach

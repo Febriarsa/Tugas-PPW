@@ -20,7 +20,7 @@
     @endif
     <div class="container">
         <h4>Tambah Buku</h4>
-        <form action="{{ route('buku.store') }}" method="post">
+        <form action="{{ route('buku.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div>judul <input type="text" name='judul' class="form-control" /></div>
             <div>penulis<input type="text" name='penulis' class="form-control" /></div>

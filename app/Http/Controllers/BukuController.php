@@ -10,9 +10,11 @@ class BukuController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except([
-            'index',
-            'search'
+        $this->middleware('auth')->only([
+            'index','search'
+        ]);
+        $this->middleware('admin')->except([
+            'index','search'
         ]);
     }
 
@@ -21,8 +23,14 @@ class BukuController extends Controller
         $data_buku = Buku::all();
         $jumlah_buku = Buku::count();
         $no = 0;
-        return view('buku.index', compact('data_buku', 'no', 'jumlah_buku'));
+
+        if (auth()->check() && auth()->user()->level == 'admin') {
+            return view('buku.index', compact('data_buku', 'no', 'jumlah_buku'));
+        }
+
+        return view('buku.users', compact('data_buku', 'no', 'jumlah_buku'));
     }
+
     public function search(Request $request)
     {
         Paginator::useBootstrapFive();
@@ -57,6 +65,7 @@ class BukuController extends Controller
                 'max' => ':attribute minimal berisi :max karakter'
             ]
         );
+
         $buku = new Buku();
         $buku->judul = $request->judul;
         $buku->penulis = $request->penulis;
