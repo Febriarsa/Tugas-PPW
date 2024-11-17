@@ -17,7 +17,7 @@
                     <th>Penulis</th>
                     <th>Harga</th>
                     <th>Tanggal Terbit</th>
-                    <th>Aksi</th>
+                    {{-- <th>Aksi</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -31,9 +31,9 @@
                         <td>{{ $buku->penulis }}</td>
                         <td>{{ 'Rp. ' . number_format($buku->harga, 0, ',', '.') }}</td>
                         <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d-m-Y') }}</td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ route('buku.show', $buku->id) }}" class="btn btn-info">Detail</a>
-                        </td>
+                        </td> --}}
                     </tr>
                 @endforeach
             </tbody>

@@ -47,17 +47,17 @@ class LoginRegisterController extends Controller
 
         $photoPath = null;
 
-        if ($request->hasFile('photo')) {
-            $filenameWithExt = $request->file('photo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('photo')->getClientOriginalExtension();
-            $photoPath = $filename . '_' . time() . '.' . $extension;
-            $path = $request->file('photo')->storeAs('photos', $photoPath);
+        // if ($request->hasFile('photo')) {
+        //     $filenameWithExt = $request->file('photo')->getClientOriginalName();
+        //     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+        //     $extension = $request->file('photo')->getClientOriginalExtension();
+        //     $photoPath = $filename . '_' . time() . '.' . $extension;
+        //     $path = $request->file('photo')->storeAs('photos', $photoPath);
             
-            if (!$path) {
-                return back()->withErrors(['photo' => 'Photo upload failed, please try again.']);
-            }
-        }
+        //     if (!$path) {
+        //         return back()->withErrors(['photo' => 'Photo upload failed, please try again.']);
+        //     }
+        // }
 
         User::create([
             'name' => $request->name,

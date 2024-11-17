@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Laravel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('lightbox2-2.11.4/dist/css/lightbox.min.css') }}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg bg-light">
@@ -23,6 +24,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ (request()->is('register')) ? 'active' : '' }}" href="{{ route('register') }}">Register</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ (request()->is('gallery')) ? 'active' : '' }}" href="{{ route('gallery.index') }}">Gallery</a>
+                     </li>
                 @else
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,5 +54,6 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('lightbox2-2.11.4/dist/js/lightbox-plus-jquery.min.js') }}"></script>
 </body>
 </html>

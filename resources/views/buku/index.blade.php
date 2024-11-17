@@ -16,6 +16,7 @@
             <thead>
                 <tr>
                     <th>id</th>
+                    <th>Foto</th>
                     <th>Judul Buku</th>
                     <th>Penulis</th>
                     <th>Harga</th>
@@ -28,12 +29,15 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $no = 1;
+                @endphp
                 @foreach ($data_buku as $buku)
-                    @php
-                        $no++;
-                    @endphp
                     <tr>
-                        <td>{{ $no = 1 }}</td>
+                        <td>{{ $no++ }}</td>
+                        <td>
+                            <img src="{{ route(buku.photo, $buku->square_image ?? 'a') }}" alt="buku" width="100px" height="100px"> 
+                        </td>
                         <td>{{ $buku->judul }}</td>
                         <td>{{ $buku->penulis }}</td>
                         <td>{{ 'Rp. ' . number_format($buku->harga, 0, ',', '.') }}</td>

@@ -5,6 +5,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GalleryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,3 +50,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [LoginRegisterController::class, 'dashboard'])->name('dashboard');
     Route::get('/users', [BukuController::class, 'index'])->name('users.index');
 });
+
+Route::resource('gallery', GalleryController::class);

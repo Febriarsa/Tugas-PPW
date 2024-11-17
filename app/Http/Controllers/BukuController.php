@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Buku;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -56,6 +57,7 @@ class BukuController extends Controller
                 'penulis' => 'required|string|max:30',
                 'harga' => 'required|numeric',
                 'tgl_terbit' => 'required|date',
+                'photo' => 'nullable|image|max:2048',
             ],
             [
                 'required' => ':attribute wajib diisi',
@@ -65,6 +67,15 @@ class BukuController extends Controller
                 'max' => ':attribute minimal berisi :max karakter'
             ]
         );
+
+        if ($request->hasFile('photo')) {
+            $filenameWithExt = $request->file('photo')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('photo')->getClientOriginalExtension();
+            $filenameSimpan = $filename . '_' . time() . '.' . $extension;
+            // $request->file('photo')->storeAs('public', $filenameSimpan);
+            $request->file('photo')->storeAs('photos', $filenameSimpan);
+        }
 
         $buku = new Buku();
         $buku->judul = $request->judul;
@@ -86,6 +97,7 @@ class BukuController extends Controller
         $buku = Buku::find($id);
         return view('buku.edit', compact('buku'));
     }
+
     public function update(Request $request, $id)
     {
         $this->validate(
@@ -104,12 +116,40 @@ class BukuController extends Controller
                 'max' => ':attribute minimal berisi :max karakter'
             ]
         );
+
+        if ($request->hasFile('photo')) {
+            $filenameWithExt = $request->file('photo')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('photo')->getClientOriginalExtension();
+            $filenameSimpan = $filename . '_' . time() . '.' . $extension;
+            // $request->file('photo')->storeAs('public', $filenameSimpan);
+            $request->file('photo')->storeAs('photos', $filenameSimpan);
+        }
+
         $buku = Buku::find($id);
         $buku->judul = $request->judul;
         $buku->penulis = $request->penulis;
         $buku->harga = $request->harga;
         $buku->tgl_terbit = $request->tgl_terbit;
+        $buku->ori_image = $filenameSimpan ?? null;
+        $buku->square_image= 'square' . $filenameSimpan ?? null;
         $buku->save();
         return redirect()->route('buku.index');
     }
+
+    public function resizePhoto($filename)
+    {
+        $image_ori = Storage::get('photos/' . $filename);
+        $image_square = Image::read($image_ori);
+        $image_square->resize(100, 100);
+        $image_square->save(Storage::path('photos/' . 'square_' . $filename));
+    }
+
+    public function show(Buku $buku)
+     {
+        $buku = Buku::find($buku->id);
+        return view('buku.show', compact('buku'));
+     }
+
+    
 }
