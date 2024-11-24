@@ -73,7 +73,6 @@ class BukuController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('photo')->getClientOriginalExtension();
             $filenameSimpan = $filename . '_' . time() . '.' . $extension;
-            // $request->file('photo')->storeAs('public', $filenameSimpan);
             $request->file('photo')->storeAs('photos', $filenameSimpan);
         }
 
@@ -82,9 +81,17 @@ class BukuController extends Controller
         $buku->penulis = $request->penulis;
         $buku->harga = $request->harga;
         $buku->tgl_terbit = $request->tgl_terbit;
+
+        if (isset($filenameSimpan)) {
+            $buku->photo = $filenameSimpan;
+        }
+
         $buku->save();
-        return redirect('/buku')->with('pesan', 'Data Buku Berhasil Disimpan');
+
+        return response()->json($buku, 201);
     }
+
+
     public function destroy($id)
     {
         $buku = Buku::find($id);
@@ -123,7 +130,8 @@ class BukuController extends Controller
             $extension = $request->file('photo')->getClientOriginalExtension();
             $filenameSimpan = $filename . '_' . time() . '.' . $extension;
             // $request->file('photo')->storeAs('public', $filenameSimpan);
-            $request->file('photo')->storeAs('photos', $filenameSimpan);
+            $path = $request->file('photo')->storeAs('photos', $filenameSimpan);
+            $this->resizePhoto($filenameSimpan);
         }
 
         $buku = Buku::find($id);
@@ -150,6 +158,8 @@ class BukuController extends Controller
         $buku = Buku::find($buku->id);
         return view('buku.show', compact('buku'));
      }
+
+
 
     
 }

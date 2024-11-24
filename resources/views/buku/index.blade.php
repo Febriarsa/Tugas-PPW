@@ -1,8 +1,8 @@
 @extends('auth.layouts')
+
 @section('content')
     <div class="m-3">
         <h1 class="text-center m-3">Data Buku</h1>
-        {{-- pesan sukses --}}
         @if (Session::has('pesan'))
             <div class="alert alert-success">{{ Session::get('pesan') }}</div>
         @endif
@@ -15,7 +15,7 @@
         <table class="table table-striped" id="table-data">
             <thead>
                 <tr>
-                    <th>id</th>
+                    <th>ID</th>
                     <th>Foto</th>
                     <th>Judul Buku</th>
                     <th>Penulis</th>
@@ -28,39 +28,12 @@
                     @endauth
                 </tr>
             </thead>
-            <tbody>
-                @php
-                    $no = 1;
-                @endphp
-                @foreach ($data_buku as $buku)
-                    <tr>
-                        <td>{{ $no++ }}</td>
-                        <td>
-                            <img src="{{ route(buku.photo, $buku->square_image ?? 'a') }}" alt="buku" width="100px" height="100px"> 
-                        </td>
-                        <td>{{ $buku->judul }}</td>
-                        <td>{{ $buku->penulis }}</td>
-                        <td>{{ 'Rp. ' . number_format($buku->harga, 0, ',', '.') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d-m-Y') }}</td>
-                        @auth
-                            @if(auth()->check() && auth()->user()->level == 'admin')
-                            <td class="d-flex">
-                                <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button onclick="return confirm('Yakin mau dihapus')" type="submit"
-                                        class="btn btn-danger">Hapus</button>
-                                </form>
-                                <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-secondary">Edit</a>
-                            </td>
-                            @endif
-                        @endauth
-                    </tr>
-                @endforeach
+            <tbody id="books-table">
+                <!-- Data akan ditambahkan di sini -->
             </tbody>
         </table>
-        <p class="h4 text-center">jumlah buku: <span>{{ $jumlah_buku }}</span></p>
-        <p class="h4 text-center">jumlah harga buku: <span>{{ $data_buku->pluck('harga')->sum() }}</span></p>
+        <p class="h4 text-center">jumlah buku: <span id="jumlah-buku"></span></p>
+        <p class="h4 text-center">jumlah harga buku: <span id="jumlah-harga"></span></p>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
@@ -69,6 +42,46 @@
     <script>
         $(document).ready(function() {
             $('#table-data').DataTable();
+            fetchBooks();
         });
+
+        function fetchBooks() {
+            fetch('/api/books')
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById('books-table');
+                    tableBody.innerHTML = '';
+                    let jumlahBuku = 0;
+                    let totalHarga = 0;
+                    data.forEach(book => {
+                        jumlahBuku++;
+                        totalHarga += book.harga;
+                        let row = `<tr>
+                            <td>${book.id}</td>
+                            <td><img src="${book.photo ? 'storage/' + book.photo : 'default.jpg'}" alt="buku" width="100"></td>
+                            <td>${book.judul}</td>
+                            <td>${book.penulis}</td>
+                            <td>Rp. ${new Intl.NumberFormat('id-ID').format(book.harga)}</td>
+                            <td>${new Date(book.tgl_terbit).toLocaleDateString('id-ID')}</td>
+                            @auth
+                                @if(auth()->check() && auth()->user()->level == 'admin')
+                                <td class="d-flex">
+                                    <form action="{{ route('buku.destroy', book.id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button onclick="return confirm('Yakin mau dihapus')" type="submit"
+                                            class="btn btn-danger">Hapus</button>
+                                    </form>
+                                    <a href="{{ route('buku.edit', book.id) }}" class="btn btn-secondary">Edit</a>
+                                </td>
+                                @endif
+                            @endauth
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                    document.getElementById('jumlah-buku').textContent = jumlahBuku;
+                    document.getElementById('jumlah-harga').textContent = totalHarga;
+                });
+        }
     </script>
 @endsection

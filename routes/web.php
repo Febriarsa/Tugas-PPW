@@ -6,6 +6,8 @@ use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\InfoController;
+use App\Http\Controllers\Api\BookApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,3 +54,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::resource('gallery', GalleryController::class);
+
+Route::get('/buku/photo/{filename}', [BukuController::class, 'getPhoto'])->name('buku.photo');
+
+Route::get('/info', [InfoController::class, 'index'])->name('info');
